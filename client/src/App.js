@@ -19,37 +19,27 @@ const styles = theme => ({
   table: {
     minWidth: 1080
   }
-})
+});
 
-const customers = [
-  
-{
-  'id' : 1,
-  'image' : 'https://placeimg.com/64/64/1',
-  'name' : '이유리',
-  'birthday' : '971123',
-  'gender' : '여자',
-  'job' : '대학생'
-},
-{
-  'id' : 2,
-  'image' : 'https://placeimg.com/64/64/2',
-  'name' : '이지은',
-  'birthday' : '980503',
-  'gender' : '여자',
-  'job' : '프로그래머'
-},
-{
-  'id' : 3,
-  'image' : 'https://placeimg.com/64/64/3',
-  'name' : '한효주',
-  'birthday' : '941226',
-  'gender' : '여자',
-  'job' : '대학생'
-
-}]
 
 class App extends Component {
+
+  state = {
+    customers: ""
+  }
+
+  componentDidMount() {
+    this.callApi()
+      .then(res => this.setState({customers: res}))
+      .catch(err => console.log(err));
+  }
+
+  callApi = async () => {
+    const response = await fetch('api/customers');
+    const body = await response.json();
+    return body;
+  }
+
   render(){
     const { classes } = this.props;
     return(
@@ -57,17 +47,17 @@ class App extends Component {
         <Table className={classes.table}>
           <TableHead>
             <TableRow>
-              <TableCell>번호</TableCell>
-              <TableCell>이미지</TableCell>
-              <TableCell>이름</TableCell>
-              <TableCell>생년월일</TableCell>
-              <TableCell>성별</TableCell>
-              <TableCell>직업</TableCell>
+              <TableCell>id</TableCell>
+              <TableCell>image</TableCell>
+              <TableCell>name</TableCell>
+              <TableCell>birthday</TableCell>
+              <TableCell>gender</TableCell>
+              <TableCell>job</TableCell>
             </TableRow>
           </TableHead>
             <TableBody>
                 {/* map 함수를 이용함으로써 특정한 배열의 각 원소에 접근하여 어떻게 처리할지 명시할 수 있다.  */}
-              {customers.map(c => {
+              {this.state.customers ? this.state.customers.map(c => {
                   return (
                     <Customer
                       key={c.id}
@@ -80,41 +70,13 @@ class App extends Component {
                       job={c.job}
                     />
                     );
-                  })
-              }
+                  }) : ""}
             </TableBody>
         </Table>
 
 
 
 
-
-    
-
-      {/* <Customer
-        id={customers[0].id}
-        image={customers[0].image}
-        name={customers[0].name}
-        birthday={customers[0].birthday}
-        gender={customers[0].gender}
-        job={customers[0].job}
-      />
-      <Customer
-        id={customers[1].id}
-        image={customers[1].image}
-        name={customers[1].name}
-        birthday={customers[1].birthday}
-        gender={customers[1].gender}
-        job={customers[1].job}
-      />
-      <Customer
-        id={customers[2].id}
-        image={customers[2].image}
-        name={customers[2].name}
-        birthday={customers[2].birthday}
-        gender={customers[2].gender}
-        job={customers[2].job}
-      /> */}
       </Paper>
     );
   }
