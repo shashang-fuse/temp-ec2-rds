@@ -5,12 +5,34 @@ class Customer extends React.Component {
     render(){
         return(
             <div>
-                {/* props: 구조화 되어서 계층적으로 표현할 수 있다.  */}
-            <h2>{this.props.name}</h2>
-            <p>{this.props.birthday}</p>
-            <p>{this.props.gender}</p>
-            <p>{this.props.job}</p>
-        </div>
+                <CustomerProfile id={this.props.id} image={this.props.image} name={this.props.name}/>
+                <CustomerInfo birthday={this.props.birthday} gender = {this.props.gender} job = {this.props.job}/>
+            </div>
+        )
+    }
+}
+
+// 사용자의 id와 image 출력
+class CustomerProfile extends React.Component {
+    render() {
+        return(
+            <div>
+                <img src={this.props.image} alt="profile"/>
+                <h2>{this.props.name}({this.props.id})</h2>
+            </div>
+        )
+    }
+}
+
+// 사용자의 남은 데이터들을 출력하도록 함
+class CustomerInfo extends React.Component {
+    render() {
+        return (
+            <div>
+                <p>{this.props.birthday}</p>
+                <p>{this.props.gender}</p>
+                <p>{this.props.job}</p>
+            </div>
         )
     }
 }
