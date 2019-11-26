@@ -26,7 +26,7 @@ app.get('/api/customers', (req, res) => {
       (err, rows, fields) => {
         res.send(rows);
       }
-    )
+    );
 });
 
 
