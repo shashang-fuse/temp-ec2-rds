@@ -41,7 +41,7 @@ class CustomerDelete extends React.Component {
     render() {
         return (
              <div>
-                <Button variant="contained" color="secondary" onClick={this.handleClickOpen}>DELETE</Button>
+                <Button variant="contained" color="primary" onClick={this.handleClickOpen}>DELETE</Button>
                 <Dialog open={this.state.open} onClose={this.handleClose}>
                     <DialogTitle onClose={this.handleClose}>
                         Delete warning
