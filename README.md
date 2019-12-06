@@ -6,9 +6,9 @@
 
 
 ### 구성
-#### 1. 사용자 리스트 출력
-#### 2. 사용자 조회
-#### 3. 사용자 삭제 
+- 1. User List View
+- 2. Search for a user
+- 3. Deleting a User
 
 
 ### Screenshots
