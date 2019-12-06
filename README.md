@@ -5,7 +5,7 @@
 - AWS RDS (Mysql)
 
 
-### 구성
+### Implementation Function
 - User List View
 - Search for a user
 - Deleting a User
