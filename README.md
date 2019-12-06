@@ -6,9 +6,9 @@
 
 
 ### 구성
-- 1. User List View
-- 2. Search for a user
-- 3. Deleting a User
+- User List View
+- Search for a user
+- Deleting a User
 
 
 ### Screenshots
