@@ -5,7 +5,7 @@
 - AWS RDS (Mysql)
 
 
-### Implementation Function
+### Features
 - User List View
 - Search for a user
 - Deleting a User
