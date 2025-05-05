@@ -2,6 +2,7 @@
   "name": "management",
   "version": "0.1.0",
   "private": true,
+  "homepage": ".",
   "dependencies": {
     "@material-ui/core": "^4.7.0",
     "axios": "^0.19.0",
