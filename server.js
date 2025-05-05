@@ -5,7 +5,7 @@ const bodyParser = require('body-parser');
 const path = require('path'); // 👈 Needed to serve frontend
 const app = express();
 
-const port = process.env.PORT || 5000;
+const port = 5000;
 
 const DB_HOST = 'devops-training.c3tiwhvjkyjy.us-west-2.rds.amazonaws.com';
 const DB_NAME = 'training';
@@ -56,5 +56,9 @@ secretsManager.getSecretValue({ SecretId: secretId }, (err, data) => {
   });
   console.log("🔈 About to start server...");
   // Start server
-  app.listen(port, () => console.log(`✅ App running on port ${port}`));
+  // bind on all IPv4 interfaces explicitly
+  app.listen(port, '0.0.0.0', () =>
+    console.log(`✅ App running on 0.0.0.0:${port}`)
+  );
+
 });
