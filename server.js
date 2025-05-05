@@ -54,7 +54,7 @@ secretsManager.getSecretValue({ SecretId: secretId }, (err, data) => {
   app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname, 'client/build', 'index.html'));
   });
-
+  console.log("🔈 About to start server...");
   // Start server
   app.listen(port, () => console.log(`✅ App running on port ${port}`));
 });
