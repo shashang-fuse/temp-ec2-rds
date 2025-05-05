@@ -1,76 +1,52 @@
-const fs = require('fs');
+const AWS = require('aws-sdk');
+const mysql = require('mysql');
 const express = require('express');
 const bodyParser = require('body-parser');
 const app = express();
+
 const port = process.env.PORT || 5000;
 
+// Static values (from you)
+const DB_HOST = 'devops-training.c3tiwhvjkyjy.us-west-2.rds.amazonaws.com';
+const DB_NAME = 'training';
+const DB_PORT = 3306;
+
+// AWS region and secret name
+const secretsManager = new AWS.SecretsManager({ region: 'us-west-2' });
+const secretId = 'rds!db-88e2b53d-0514-4471-b8de-2ac870f07e79';
+
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended : true}));
+app.use(bodyParser.urlencoded({ extended: true }));
 
-const data = fs.readFileSync('./database.json');
-const conf = JSON.parse(data);
-const mysql = require('mysql');
+secretsManager.getSecretValue({ SecretId: secretId }, (err, data) => {
+  if (err) {
+    console.error("❌ Error fetching secret:", err);
+    process.exit(1);
+  }
 
-const connection = mysql.createConnection({
-  host: conf.host,
-  user: conf.user,
-  password: conf.password,
-  port: conf.port,
-  database: conf.database
+  const creds = JSON.parse(data.SecretString);
+
+  const connection = mysql.createConnection({
+    host: DB_HOST,
+    user: creds.username,
+    password: creds.password,
+    port: DB_PORT,
+    database: DB_NAME
+  });
+
+  connection.connect();
+
+  // Routes
+  app.get('/api/customers', (req, res) => {
+    connection.query("SELECT * FROM CUSTOMER WHERE isDeleted = 0", (err, rows) => {
+      if (err) res.status(500).send(err);
+      else res.send(rows);
+    });
+  });
+
+  app.get('/api/hello', (req, res) => {
+    res.send({ message: 'Hello Express!' });
+  });
+
+  app.listen(port, () => console.log(`✅ App running on port ${port}`));
 });
-connection.connect();
-
-const multer = require('multer');
-const upload = multer({dest: './upload'})
-
-
-app.get('/api/customers', (req, res) => {
-    connection.query(
-      "SELECT * FROM CUSTOMER WHERE isDeleted = 0",
-      (err, rows, fields) => {
-        res.send(rows);
-      }
-    );
-});
-
-
-app.get('/api/hello', (req, res) => {
-    res.send({message: 'Hello Express!'});
-});
-
-
-app.use('/image', express.static('./upload'));
-
-app.post('/api/customers', upload.single('image'), (req, res) => {
-    let sql = 'INSERT INTO CUSTOMER VALUES (null, ?, ?, ?, ?, ?, now(), 0)';
-    let image = '/image/' + req.file.filename;
-    let name = req.body.name;
-    let birthday = req.body.birthday;
-    let gender = req.body.gender;
-    let job = req.body.job;
-
-    console.log(name);
-    console.log(image);
-    console.log(birthday);
-    console.log(gender);
-    console.log(job);
-
-    let params = [image, name, birthday, gender, job];
-    connection.query(sql, params,
-        (err, rows, fields) => {
-          res.send(rows);
-        }  
-    );
-});
-
-app.delete('/api/customers/:id', (req, res) => {
-  let sql = 'UPDATE CUSTOMER SET isDeleted =1 WHERE id = ?';
-  let params = [req.params.id];
-  connection.query(sql, params,
-      (err, rows, fields) => {
-        res.send(rows);
-      }
-  )
-});
-
-app.listen(port, () => console.log(`Listening on port ${port}`));
