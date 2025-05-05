@@ -2,16 +2,15 @@ const AWS = require('aws-sdk');
 const mysql = require('mysql');
 const express = require('express');
 const bodyParser = require('body-parser');
+const path = require('path'); // 👈 Needed to serve frontend
 const app = express();
 
 const port = process.env.PORT || 5000;
 
-// Static values (from you)
 const DB_HOST = 'devops-training.c3tiwhvjkyjy.us-west-2.rds.amazonaws.com';
 const DB_NAME = 'training';
 const DB_PORT = 3306;
 
-// AWS region and secret name
 const secretsManager = new AWS.SecretsManager({ region: 'us-west-2' });
 const secretId = 'rds!db-88e2b53d-0514-4471-b8de-2ac870f07e79';
 
@@ -36,7 +35,7 @@ secretsManager.getSecretValue({ SecretId: secretId }, (err, data) => {
 
   connection.connect();
 
-  // Routes
+  // API Routes
   app.get('/api/customers', (req, res) => {
     connection.query("SELECT * FROM CUSTOMER WHERE isDeleted = 0", (err, rows) => {
       if (err) res.status(500).send(err);
@@ -48,5 +47,14 @@ secretsManager.getSecretValue({ SecretId: secretId }, (err, data) => {
     res.send({ message: 'Hello Express!' });
   });
 
+  // 🧠 Serve frontend static files
+  app.use(express.static(path.join(__dirname, 'client/build')));
+
+  // ⚠️ Catch-all to serve index.html for frontend routes
+  app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, 'client/build', 'index.html'));
+  });
+
+  // Start server
   app.listen(port, () => console.log(`✅ App running on port ${port}`));
 });
